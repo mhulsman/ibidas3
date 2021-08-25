@@ -1,0 +1,10 @@
+include README
+include CHANGELOG
+
+include ez_setup.py
+include run
+include ibidas_env.sh
+
+recursive-include src *
+recursive-include docs *
+prune docs/_build
