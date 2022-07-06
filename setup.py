@@ -32,7 +32,7 @@ setup(
     packages = find_packages(),
     test_suite = "test",
     scripts = ['bin/ibidas3'],
-     install_requires=['numpy>=1.4.1','numpy!=1.6.0','sqlalchemy>=0.6.4','ipython>=0.10','sphinx>=1.0.5','XlsxWriter>=0.5.3','spark-parser'],
+     install_requires=['numpy>=1.4.1','numpy!=1.6.0','ipython','spark-parser','sqlalchemy'],
      author = "M. Hulsman & J.J.Bot",
      author_email = "m.hulsman@tudelft.nl",
      description = "Ibidas is an environment for data handling and exploration, able to cope with different data structures and sources",

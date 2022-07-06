@@ -39,7 +39,7 @@ class UnaryOp(Op):#{{{
         :param dims: tuple of Dim objects, optional, default = ()
         """
         assert isinstance(name, str), "Name of slice should be a string"
-        assert (name.lower() == name), "Name should be in lowercase"
+        assert (name.lower() == name), ("Name %s should be in lowercase" % name)
         assert isinstance(rtype, rtypes.TypeUnknown), "Invalid type given"
         assert isinstance(dims, dimpaths.DimPath), "Dimensions of a slice should be a DimPath"
         assert isinstance(bookmarks,set), "Bookmarks should be a set"

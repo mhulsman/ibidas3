@@ -294,7 +294,7 @@ class Connection(object):
         else:
             self._meta.reflect(bind=self._engine)
         
-        tables = self._meta.tables.copy()
+        tables = dict(self._meta.tables)
         self._sa_tables = tables
 
         info_tables = [table for table in list(tables.values()) if "__info__" in table.name]

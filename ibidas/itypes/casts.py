@@ -185,6 +185,16 @@ def simBytes(intype, outtypecls, dimdepth):
 
 addCasts(rtypes.TypeAll, rtypes.TypeBytes, checkBytes, simBytes,"to_bytes")
 
+def checkString(intype, outtype):
+    if(not isinstance(outtype,rtypes.TypeString)):
+        return False
+    return True
+
+def simString(intype, outtypecls, dimdepth):
+    ndim = dimensions.Dim(UNDEFINED, (True,) * dimdepth, intype.has_missing)
+    return types.TypeString(dims=dimpaths.DimPath(ndim),has_missing=intype.has_missing)
+
+addCasts(rtypes.TypeAll, rtypes.TypeString, checkString, simString,"to_string")
 
 
 

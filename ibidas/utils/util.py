@@ -136,7 +136,7 @@ def save_rep(r, filename):
 
 
 def save_csv(r, filename, remove_line_end=True, names=True, lineterminator='\n', delimiter=',', quotechar='"'):
-    f = open(filename,'wb')
+    f = open(filename,'w')
     r= r.Array(tolevel=1)
 
     #convert bool to int
@@ -230,11 +230,20 @@ def load_rep(filename):
                 break
             csize, bsize = struct.unpack('ll', s)
             res.append(zlib.decompress(f.read(csize),0,bsize))
-        return pickle.loads(b''.join(res))
+        try:
+            res = pickle.loads(b''.join(res))
+        except UnicodeDecodeError:
+            res = pickle.loads(b''.join(res),encoding='latin1',fix_imports=True)
+        return res            
+            
     else:
         f.seek(0)
         s = zlib.decompress(f.read())
-        return pickle.loads(s)
+        try:
+            res = pickle.loads(s)
+        except UnicodeDecodeError:
+            res = pickle.loads(s,encoding='latin1',fix_imports=True)
+        return res            
 
  
 def valid_name(name):

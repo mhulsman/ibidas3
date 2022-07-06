@@ -25,6 +25,7 @@ import IPython
 ipversion = IPython.__version__.split('.')
 oldip = int(ipversion[0]) == 0 and int(ipversion[1]) <= 10
 oldip2 = int(ipversion[0]) == 1 and int(ipversion[1]) < 1
+oldip3 = int(ipversion[0]) <=7 
 
 if oldip:
     from IPython.Shell import IPShellEmbed
@@ -34,8 +35,11 @@ if oldip:
 elif oldip2:
     from IPython.config.loader import Config
     from IPython.frontend.terminal.embed import InteractiveShellEmbed
-else:   
+elif oldip3:    
     from IPython.config.loader import Config
+    from IPython.terminal.embed import InteractiveShellEmbed
+else:   
+    from traitlets.config import Config
     from IPython.terminal.embed import InteractiveShellEmbed
     
     #from IPython.ipapi import TryNext

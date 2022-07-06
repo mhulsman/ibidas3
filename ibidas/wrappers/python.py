@@ -92,6 +92,7 @@ def Rep(data=None, dtype=None, unpack=True, name=None, allow_convert=False):
             name = res[0]
         else:            
             name = "data"
+        name =util.valid_name(name)
 
     data_slice = ops.DataOp(data,name=name,rtype=dtype)
     
@@ -662,6 +663,13 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
             func = any_tobytes_missing
         else:
             func = any_tobytes
+        return slice.data.mapseq(func, res_type=node.type)
+    
+    def castto_string(self, castname, node, slice):
+        if(node.type.has_missing):
+            func = any_tostring_missing
+        else:
+            func = any_tostring
         return slice.data.mapseq(func, res_type=node.type)
 
     def caststring_to_real(self, castname, node, slice):
@@ -1442,12 +1450,26 @@ def any_tobytes_missing(seq):
         if elem is Missing:
             res.append(Missing)
         else:
-            res.append(str(elem))
+            res.append(bytes(str(elem),encoding='utf8'))
     return util.darray(res)
 
 def any_tobytes(seq):
+    res = [bytes(str(elem),encoding='utf8') for elem in seq.astype(object)]
+    return util.darray(res)
+
+def any_tostring_missing(seq):
+    res = []
+    for elem in seq:
+        if elem is Missing:
+            res.append(Missing)
+        else:
+            res.append(str(elem))
+    return util.darray(res)
+
+def any_tostring(seq):
     res = [str(elem) for elem in seq.astype(object)]
     return util.darray(res)
+
 
 
 def string_to_int_missing(seq, dtype):
@@ -1482,6 +1504,9 @@ def string_to_real(seq, dtype):
     return util.darray([float(elem) for elem in seq],dtype)
 
 def string_to_string_missing(seq, dtype):
+    if dtype == bytes:
+        dtype = lambda x: bytes(x,encoding='utf8')
+        
     res = []
     for elem in seq:
         if elem is Missing or elem == "":
@@ -1494,6 +1519,8 @@ def string_to_string_missing(seq, dtype):
     return util.darray(res,object)
 
 def string_to_string(seq, dtype):
+    if dtype == bytes:
+        dtype = lambda x: bytes(x,encoding='utf8')
     return util.darray([dtype(elem) for elem in seq],object)
 
 
