@@ -1,5 +1,6 @@
 import operator
-from collections import defaultdict, Iterable
+from collections import defaultdict
+from collections.abc import Iterable
 from ..constants import *
 from . import rtypes
 from ..utils import util
