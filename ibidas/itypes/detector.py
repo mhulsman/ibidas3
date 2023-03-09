@@ -114,7 +114,7 @@ class Detector(object):
     def processSeq(self, seq):
         if isinstance(seq,numpy.ndarray) and len(seq.shape) == 1:
             dtype = seq.dtype
-            if dtype == numpy.object:
+            if dtype == numpy.object_:
                 pass
             elif dtype.char == 'S': #FIXME: speedup possible
                 pass
@@ -716,7 +716,7 @@ class ContainerScanner(TypeScanner):
             
             if len(dtypes) == 1:
                 dtype = dtypes.pop()
-                if dtype == numpy.object:
+                if dtype == numpy.object_:
                     pass
                 elif dtype.char == 'S': #FIXME: speedup possible
                     pass

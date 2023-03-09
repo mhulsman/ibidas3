@@ -29,9 +29,10 @@ possible_commentchars = numpy.array(['#','/','*','%','@','!','~','?','|','>'],dt
 
 class TSVRepresentor(wrapper.SourceRepresentor):
     def __init__(self, filename, skiprows=None, dtype=rtypes.unknown, fieldnames=None, 
-                  delimiter=None, quotechar=None, escapechar=None, commentchar=None, skipinitialspace=None, doublequote=None, verbose=True,scan=True):
+                  delimiter=None, quotechar=None, escapechar=None, commentchar=None, skipinitialspace=None, doublequote=None, verbose=True,scan=True, 
+                  encoding='utf-8'):
         
-        file = util.open_file(filename,mode='r')
+        file = util.open_file(filename,mode='r',encoding=encoding)
        
         sample_lines = self.get_sample(file,length=500)
  
@@ -148,7 +149,7 @@ class TSVRepresentor(wrapper.SourceRepresentor):
             print('Comments:')
             print("".join(comments))
     
-        slice = TSVOp(filename, dialect, startpos, dtype, "data", lines=data)
+        slice = TSVOp(filename, dialect, startpos, dtype, "data", lines=data, encoding=encoding)
         if(slice.type.__class__ is rtypes.TypeArray):
             slice = ops.UnpackArrayOp(slice)
         if(slice.type.__class__ is rtypes.TypeTuple):
@@ -363,16 +364,17 @@ class TSVRepresentor(wrapper.SourceRepresentor):
 class TSVOp(ops.ExtendOp):
     __slots__ = ["filename", "dialect","startpos"]
 
-    def __init__(self, filename, dialect, startpos, rtype, name, lines=None):
+    def __init__(self, filename, dialect, startpos, rtype, name, lines=None, encoding='utf-8'):
         self.filename = filename
         self.dialect = dialect
         self.startpos = startpos
         self.lines = lines
+        self.encoding = encoding
         ops.ExtendOp.__init__(self,name=name,rtype=rtype)
 
     def py_exec(self):
         if self.lines is None:
-            file = util.open_file(self.filename,mode='r')
+            file = util.open_file(self.filename,mode='r',encoding=self.encoding)
             file.seek(self.startpos)
 
             if(isinstance(self.dialect, str)):

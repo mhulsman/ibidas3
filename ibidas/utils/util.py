@@ -135,7 +135,7 @@ def save_rep(r, filename):
         f.close()
 
 
-def save_csv(r, filename, remove_line_end=True, names=True, lineterminator='\n', delimiter=',', quotechar='"'):
+def save_csv(r, filename, remove_line_end=True, names=True, lineterminator='\n', delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL):
     f = open(filename,'w')
     r= r.Array(tolevel=1)
 
@@ -146,9 +146,9 @@ def save_csv(r, filename, remove_line_end=True, names=True, lineterminator='\n',
 
     data = r.Cast(str)
     if filename.endswith('tsv') or filename.endswith("bed"):
-        w = csv.writer(f,delimiter='\t', quotechar=quotechar, quoting=csv.QUOTE_MINIMAL, lineterminator=lineterminator);
+        w = csv.writer(f,delimiter='\t', quotechar=quotechar, quoting=quoting, lineterminator=lineterminator);
     else:
-        w = csv.writer(f,delimiter=delimiter,quotechar=quotechar, quoting=csv.QUOTE_MINIMAL, lineterminator=lineterminator);
+        w = csv.writer(f,delimiter=delimiter,quotechar=quotechar, quoting=quoting, lineterminator=lineterminator);
 
     if remove_line_end:
         data = data.Each(lambda x: x.replace('\n',''), dtype=str, per_slice=True)
@@ -544,13 +544,13 @@ class farray(numpy.ndarray):
         return res
 
 
-def open_file(filename,mode='r'):
+def open_file(filename,mode='r',encoding='utf-8'):
     filename = os.path.expanduser(filename)
     if(filename.endswith("gz")):
         import gzip
         file = gzip.open(filename)
     else:
-        file = open(filename,mode=mode)
+        file = open(filename,mode=mode, encoding=encoding)
     return file
 
 

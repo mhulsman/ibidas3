@@ -81,7 +81,7 @@ class Type(object):#{{{
     """
     name = "?"
     _dtype = "object"
-    _scalar = numpy.object
+    _scalar = numpy.object_
     _defval = None
     _reqRPCcon=True
     has_missing = True
@@ -1172,7 +1172,7 @@ class TypeBool(TypeUInt8, TypeInt8):#{{{
     name = "bool"
     _minmax = (0, 1)
     _dtype = "bool"
-    _scalar = numpy.bool
+    _scalar = numpy.bool_
     _defval = False
     _reqRPCcon=True
     _ptype = bool
