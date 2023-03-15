@@ -153,8 +153,11 @@ def save_csv(r, filename, remove_line_end=True, names=True, lineterminator='\n',
     if remove_line_end:
         data = data.Each(lambda x: x.replace('\n',''), dtype=str, per_slice=True)
     data = data.Tuple().ToPython();
-    if names:
-        w.writerow(r.Names);
+    if isinstance(names, dict):
+        transform = names.get('FUNC', lambda x:x)
+        w.writerow([transform(names.get(n,n)) for n in r.Names]);
+    elif names is True:
+        w.writerow(r.Names)
     w.writerows(data);
     f.close()
 
