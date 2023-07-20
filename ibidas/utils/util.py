@@ -12,7 +12,9 @@ except ImportError:
     try:
         from IPython.core.debugger import Tracer; debug_here = Tracer()
     except:
-        pass
+        def debug_here():
+            import pdb
+            pdb.set_trace()
 import pickle, zlib
 import math
 import os.path
