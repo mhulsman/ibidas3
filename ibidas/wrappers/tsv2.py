@@ -63,7 +63,7 @@ class TSVRepresentor(wrapper.SourceRepresentor):
         elif(dtype == rtypes.unknown):
             if(fieldnames is None):
                 if len(possible_fieldnames) > 0 and possible_fieldnames[:1] == dialect.commentchar:
-                    score1 = self.has_header([possible_fieldnames[1:]] + ["\n".join(sample_lines)],dialect)
+                    score1 = self.has_header(possible_fieldnames[1:] + '\n' + "\n".join(sample_lines),dialect)
                 else:
                     score1 = -1
 
