@@ -638,7 +638,7 @@ registerTypeScanner(RecordDictScanner)
 
 class ContainerScanner(TypeScanner):
     good_cls = set([set, frozenset, custom_collections.NamedList, MissingType, list, array.array, numpy.ndarray])
-    bad_cls = set([tuple, str, str, numpy.unicode_, numpy.string_, module_types.soap_struct])
+    bad_cls = set([tuple, str, str, numpy.str_, numpy.bytes_, module_types.soap_struct])
 
     def __init__(self, detector):
         TypeScanner.__init__(self, detector)
@@ -802,8 +802,8 @@ registerTypeScanner(SetScanner)
 
 
 class StringScanner(TypeScanner):
-    good_cls = set([str, str, MissingType, numpy.string_, numpy.unicode_])
-    unicode_cls = set([str, numpy.unicode_])
+    good_cls = set([str, str, MissingType, numpy.bytes_, numpy.str_])
+    unicode_cls = set([str, numpy.str_])
 
     def __init__(self, detector):
         TypeScanner.__init__(self, detector)

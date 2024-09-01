@@ -114,7 +114,7 @@ class StringConvertor(BaseConvertor):
         elif(not seq.dtype == dtype):
             #numpy bug: numpy.cast[<string dtype>] always cast to S1, irrespective 
             #requested length
-            seq = util.darray(list(seq),numpy.string_)
+            seq = util.darray(list(seq),numpy.bytes_)
         return seq
 
 
