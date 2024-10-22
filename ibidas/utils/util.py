@@ -289,9 +289,9 @@ def numpy_unique(ar, return_index=False, return_inverse=False):
 
     if ar.size == 0:
         if return_inverse and return_index:
-            return ar, np.empty(0, np.bool), np.empty(0, np.bool)
+            return ar, np.empty(0, bool), np.empty(0, bool)
         elif return_inverse or return_index:
-            return ar, np.empty(0, np.bool)
+            return ar, np.empty(0, bool)
         else:
             return ar
 
@@ -638,7 +638,7 @@ def replace_darray(data, type=object, maxdim=1, mindim=0):
         lshape = len(data.shape)
         if lshape >= mindim and lshape <= maxdim:
             if not data.dtype == type:
-                data = numpy.cast[type](data)
+                data = numpy.asarray(data, dtype=type)
             return data
         
 
@@ -677,7 +677,7 @@ def replace_darray(data, type=object, maxdim=1, mindim=0):
     return x
 
 nversion = numpy.__version__.split('.')    
-numpy16up = int(nversion[0]) >= 1 and int(nversion[1]) >= 6
+numpy16up = (int(nversion[0]) == 1 and int(nversion[1]) >= 6) or int(nversion[0]) > 1
 
 darray = replace_darray
 

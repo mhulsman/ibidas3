@@ -990,6 +990,6 @@ def validate_array(seq, cdepth, dtype):
             z[:] = seq
             seq = z
         else:
-            seq = numpy.cast[dtype](seq)
+            seq = numpy.asarray(seq, dtype=dtype)
     return seq
 

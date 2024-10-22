@@ -50,13 +50,13 @@ class FullSparse(numpy.ndarray):
             res.shape = self.shape
         else:
             func = numpy.frompyfunc(func,1,1)
-            res = numpy.cast[otype](func(self))
+            res = numpy.asarray(func(self),dtype=otype)
         
         return FullSparse(res)
 
     def filter_tomissing(self,filter):
         nval = self.copy()
-        nval = numpy.cast[object](nval)
+        nval = numpy.asarray(nval, dtype=object)
         nval[~filter] = Missing
         return nval.view(FullSparse)
 
@@ -71,7 +71,7 @@ class FullSparse(numpy.ndarray):
         else:
             res = self
         if(not otype is None):
-            res = numpy.cast[otype](res)
+            res = numpy.asarray(res, dtype=otype)
         return res
     
     def without_missing(self):
@@ -175,8 +175,8 @@ def _inbetween_tile(lpos,apos,nrows,ncols,times):
         templpos.extend(numpy.tile(t,times))
         steppos += 1
 
-    lpos = numpy.cast[int](templpos)
-    apos = numpy.cast[int](tempapos)
+    lpos = numpy.asarray(templpos,dtype=int)
+    apos = numpy.asarray(tempapos,dtype=int)
     return (lpos,apos)
 
 

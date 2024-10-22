@@ -609,7 +609,7 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
    
     def castto_any(self,castname,node,slice):
         dtype = node.type.toNumpy()
-        return slice.data.mapseq(lambda x:numpy.cast[dtype](x),res_type=node.type)
+        return slice.data.mapseq(lambda x:numpy.asarray(x,dtype=dtype),res_type=node.type)
     
     def castto_pickle(self,castname,node,slice):
         dtype = node.type.toNumpy()
@@ -622,7 +622,7 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
     def castto_numbers(self,castname,node,slice):
         dtype = node.type.toNumpy()
         if not node.type.has_missing:
-            return slice.data.mapseq(lambda x:numpy.cast[dtype](x),res_type=node.type)
+            return slice.data.mapseq(lambda x:numpy.asarray(x,dtype=dtype),res_type=node.type)
         else:
             xtype = dtype.type
             def val(v):
@@ -754,7 +754,7 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
         data1,data2 = data
         if(data1 is Missing or data2 is Missing):
             return Missing
-        return util.darray(list(numpy_arith[op](numpy.cast[object](data1), numpy.cast[object](data2))),typeo.toNumpy())
+        return util.darray(list(numpy_arith[op](numpy.asarray(data1,dtype=object), numpy.asarray(data2, dtype=object))),typeo.toNumpy())
     
     def array_add_arrayAdd(self, data, type1, type2, typeo, op):
         data1,data2 = data
@@ -773,7 +773,7 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
         data1,data2 = data
         res =  numpy_cmp[op](data1, data2)
         if type1.has_missing or type2.has_missing:
-            res = numpy.cast[object](res)
+            res = numpy.asarray(res,dtype=object)
         if type1.has_missing:
             for i in range(len(data1)):
                 if data1[i] is Missing:
@@ -793,18 +793,18 @@ class PyExec(VisitorFactory(prefixes=("visit","unpackCast"), flags=NF_ELSE),
         #Note: numpy seems to segfault, when using reverse operations on string comparision
         #using as first argument an  object array and as second a string array. 
         if(isinstance(data1,numpy.ndarray) and data1.dtype == object and isinstance(data2,numpy.ndarray) and data2.dtype != object):
-            data = (data1, numpy.cast[object](data2))
+            data = (data1, numpy.asarray(data2,dtype=object))
 
         res = getattr(data1, op)(data2)
         if(res is NotImplemented):
             if(isinstance(data1,numpy.ndarray) and data1.dtype != object and isinstance(data2,numpy.ndarray) and data2.dtype == object):
-                data = (numpy.cast[object](data1), data2)
+                data = (numpy.asarray(data1,dtype=object), data2)
             res = getattr(data2, reverse_op[op])(data1)
         assert not res is NotImplemented, "Not implemented error in stringstringGeneral for " \
                                             + str(op) + " and " + str(type1) + ", " + str(type2)
         
         if type1.has_missing or type2.has_missing:
-            res = numpy.cast[object](res)
+            res = numpy.asarray(res,dtype=object)
         if type1.has_missing:
             for i in range(len(data1)):
                 if data1[i] is Missing:

@@ -380,7 +380,7 @@ def exec_object_unaryfunc(data1, type1, otype, func):
     if(isinstance(data1, numpy.ndarray) and 
                                     not type1.__class__ is rtypes.TypeArray):
         func = numpy.vectorize(func)
-        res = numpy.cast[otype.toNumpy()](func(data1)).view(sparse_arrays.FullSparse)
+        res = numpy.asarray(func(data1), dtype=otype.toNumpy()).view(sparse_arrays.FullSparse)
     else:
         res = func(data1)
             

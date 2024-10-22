@@ -79,7 +79,7 @@ class ArrayConvertor(BaseConvertor):
                     z[:] = elem
                     elem = z
                 else:
-                    elem = numpy.cast[elem_numpy_type](elem)
+                    elem = numpy.asarray(elem, dtype=elem_numpy_type)
 
             if(rest_dims):
                 elem = self._convert(rest_dims,elem_type,elem)
