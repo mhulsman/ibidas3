@@ -690,12 +690,19 @@ def random_names(n, exclude=set()):
             rn.add(z)
     return list(rn)        
 
-def seq_names(n, exclude=set()):
+def seq_names(n, exclude=set(), add_exclude=False):
     rn = []
     for i in seqgen():
         z = 'd' + str(i)
         if not z in exclude:
             rn.append(z)
+            if add_exclude:
+                if isinstance(exclude, set):
+                    exclude.add(z)
+                elif isinstance(exclude, list):
+                    exclude.append(z)
+                else:
+                    raise ValueError("Unknown exclude type: %s" % type(exclude))
         if len(rn) >= n:
             break
     return rn

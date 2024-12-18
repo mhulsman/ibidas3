@@ -197,10 +197,14 @@ class UnaryFuncSegregateOp(UnaryFuncElemOp):
     @classmethod
     def _apply(cls, slices, exclude_dimnames, **kwargs):
         nslices = []
+        dimcache = {} #cache in case of shared dim (option: shareddim=True)
         for slice in slices:
             slice = cls._prepareSlice(slice)
-            sig, nkwargs, outparam = cls._findSignature(slice=slice,exclude_dimnames=exclude_dimnames,**kwargs)
+            sig, nkwargs, outparam = cls._findSignature(slice=slice,exclude_dimnames=exclude_dimnames,dimcache=dimcache,**kwargs)
             nkwargs.pop('exclude_dimnames')
+            nkwargs.pop('dimcache')
+            nkwargs.pop('shareddim',False)
+
             s = cls._slicecls(cls.__name__, sig, outparam.name, outparam.type, **nkwargs)
             for i in range(cls._unpackdepth):
                 s = ops.UnpackArrayOp(s)
@@ -567,9 +571,17 @@ class StringToStringArraySignature(FuncSignature):#{{{
         in_type = slice.type
         if(not isinstance(in_type, rtypes.TypeString)):
             return False
-        dimnames = util.seq_names(2, exclude=exclude_dimnames)
-        sdim = dimensions.Dim(UNDEFINED, dependent=(True,), name=dimnames[1])
-        ndim = dimensions.Dim(UNDEFINED, dependent=(True,) * len(slice.dims), name=dimnames[0])
+        if kwargs.get('shareddim',False) == True  and 'dimcache' in kwargs and 'ndim' in kwargs['dimcache']:
+            ndim = kwargs['dimcache']['ndim']
+            dimnames = util.seq_names(1, exclude=exclude_dimnames, add_exclude=True)
+            sdim = dimensions.Dim(UNDEFINED, dependent=(True,), name=dimnames[0])
+        else:    
+            dimnames = util.seq_names(2, exclude=exclude_dimnames, add_exclude=True)
+            sdim = dimensions.Dim(UNDEFINED, dependent=(True,), name=dimnames[1])
+            ndim = dimensions.Dim(UNDEFINED, dependent=(True,) * len(slice.dims), name=dimnames[0])
+            
+            if kwargs.get('shareddim', False) == True and 'dimcache' in kwargs:
+                kwargs['dimcache']['ndim'] = ndim
         subout_type = rtypes.TypeString(has_missing=in_type.has_missing, dims=dimpaths.DimPath(sdim))
         out_type = rtypes.TypeArray(dims=dimpaths.DimPath(ndim),subtypes=(subout_type,))
         return Param(slice.name, out_type)#}}}

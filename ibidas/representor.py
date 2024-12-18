@@ -935,8 +935,8 @@ class Representor(Node):
     def HasPattern(self, value, ignore_case=False):
         return repops_funcs.HasPattern(self, pattern=value, ignore_case=ignore_case)
     
-    def SplitOnPattern(self, value, max_splits=0, ignore_case=False):
-        return repops_funcs.SplitOnPattern(self, pattern=value, ignore_case=ignore_case, max_splits=0)
+    def SplitOnPattern(self, value, max_splits=0, ignore_case=False, shareddim=False):
+        return repops_funcs.SplitOnPattern(self, pattern=value, ignore_case=ignore_case, max_splits=max_splits, shareddim=shareddim)
 
     def Like(self, value, ignore_case=False):
         return repops_funcs.Like(self, pattern=value, ignore_case=ignore_case)
